@@ -1,3 +1,5 @@
+import { ICommentResponse } from "./ICommentResponse"
+
 export interface IPost {
     postId: number
     userId: number
@@ -8,4 +10,5 @@ export interface IPost {
     likeCount: number
     commentCount: number
     sharedDate: number
+    commentList?: ICommentResponse[]
 }

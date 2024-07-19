@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux'
 import { fetchGetUserProfile, IUserProfile } from '../../store/features/userSlice'
 import CommentPopUp from '../../components/molecules/CommentPopUp'
 import { fetchGetAllComments } from '../../store/features/postSlice'
+import ShowMorePopUp from '../../components/molecules/ShowMorePopUp'
 function Home() {
     const dispatch = useDispatch<SocialDispatch>();
     const token = useAppSelector(state => state.auth.token);
@@ -228,6 +229,7 @@ function Home() {
 
                 <HomeContent     />
                 <CommentPopUp/>
+                <ShowMorePopUp/>
 
                 
             </div>
@@ -238,6 +240,7 @@ function Home() {
 
 
                 <HomeRight/>
+
 
             </div>
 

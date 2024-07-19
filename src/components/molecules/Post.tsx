@@ -3,9 +3,11 @@ import { getFormattedElapsedTime } from '../../util/Tools'
 import { postSlice } from '../../store/features'
 import store, { SocialDispatch, useAppSelector } from '../../store'
 import { useDispatch } from 'react-redux'
-import { setPopUpOpen, setPostId } from '../../store/features/postSlice'
+import { fetchCommentListByPost, increasePageNumber, setPopUpOpen, setPostId, setShowMoreOpen } from '../../store/features/postSlice'
 import { IComment } from '../models/IComment'
 import { ICommentResponse } from '../models/ICommentResponse'
+import Comments from './Comments'
+import ShowMorePopUp from './ShowMorePopUp'
 interface IPostProps{
   postId: number,
   avatar:string,
@@ -25,12 +27,29 @@ function Post(props: IPostProps) {
 
   const dispatch = useDispatch<SocialDispatch>();
   const commentList = useAppSelector(state => state.post.commentList);
- //const postList = useAppSelector(state => state.post.postList);
+  const page = useAppSelector(state => state.post.page);
+  
+
 
 
   const handleClick = () => {
     dispatch(setPopUpOpen(true));
     dispatch(setPostId(props.postId));
+  }
+
+  const handleShowMorePopUp = () => {
+    dispatch(setShowMoreOpen(true));
+    dispatch(setPostId(props.postId));
+    dispatch(fetchCommentListByPost({
+      postId : props.postId,
+      size: 3,
+      page : page
+    }));
+    
+  }
+
+  const increasePageNumberr = () => {
+    dispatch(increasePageNumber());
   }
   return (
     <>
@@ -53,25 +72,23 @@ function Post(props: IPostProps) {
                                       <small>{getFormattedElapsedTime(props.date)}</small>
                                       {
                                        
-                                       commentList?.map((comment,index)=>{
+                                       props.commentList?.map((comment,index)=>{
                                           
                                           if(comment.postId===props.postId){
                                             return <>
-                                              <div className="media mb-3 mt-5 shadow" >
-                                            <img src={comment.avatar} alt="img" width="45px" height="45px" className="rounded-circle mr-2" />
-                                            <h5>@{comment.username}</h5>
-                                            <div className="media-body">
-                                                    <p className="card-text text-justify">{comment.comment}</p>
-                                                    <h6>{getFormattedElapsedTime(comment.sharedDate)}</h6>
-
-                                            </div>
-                                        </div>
+                                                <Comments username={comment.username} avatar={comment.avatar} comment={comment.comment} sharedDate={comment.sharedDate} postId={comment.postId}/>
                                           </>
                                           }
                                           
                                         })
                                       }
-                                    
+
+                                                <button onClick={()=> {handleShowMorePopUp();increasePageNumberr()}} className='btn btn-primary'>
+                                                    Show More
+                                                </button>
+                                        
+                                      
+                                      
                                 </div>                            
                             </div>
                         </div>                                  

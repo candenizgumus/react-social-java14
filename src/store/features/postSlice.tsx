@@ -4,12 +4,16 @@ import { IResponse } from "../../components/models/IResponse"
 import { IPost } from "../../components/models/IPost"
 import { IComment } from "../../components/models/IComment"
 import { ICommentResponse } from "../../components/models/ICommentResponse"
+import { ICommentListByPost } from "../../components/models/ICommentListByPost"
 interface IInitialPost{
     postList:IPost[],
     isPostLoading:boolean
     sendMessagePostId: number
     isPopUpOpen : boolean
     commentList:ICommentResponse[]
+    showMoreCommentList:ICommentResponse[]
+    isShowMoreOpen:boolean
+    page:number
 }
 interface ICreatePostPayload {
     token:string,
@@ -22,7 +26,10 @@ const initialPostState:IInitialPost = {
     isPostLoading: false,
     sendMessagePostId: 0,
     isPopUpOpen : false,
-    commentList:[]
+    commentList:[],
+    showMoreCommentList:[],
+    isShowMoreOpen:false,
+    page:0
 }
 
 export const fetchCreatePost = createAsyncThunk(
@@ -78,6 +85,22 @@ export const fetchGetAllComments = createAsyncThunk(
     }
 )
 
+export const fetchCommentListByPost = createAsyncThunk(
+    'post/fetchCommentListByPost',
+    async (payload: ICommentListByPost) => {
+        const response = await fetch('http://localhost:9090/comment/get-comment-list-by-post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                'postId': payload.postId,
+                'page': payload.page,
+                'size': payload.size
+            })
+        }).then(data => data.json())
+        return response
+    }
+)
+
 
 
 const postSlice = createSlice({
@@ -90,6 +113,12 @@ const postSlice = createSlice({
         },
         setPostId(state,action:PayloadAction<number>){
             state.sendMessagePostId = action.payload
+        },
+        setShowMoreOpen(state,action:PayloadAction<boolean>){
+            state.isShowMoreOpen = action.payload
+        },
+        increasePageNumber(state){
+            state.page = state.page + 1
         }
     },
     extraReducers: (builder) => {
@@ -108,10 +137,17 @@ const postSlice = createSlice({
             state.commentList = action.payload.data
             console.log(action.payload.data)
            
-        })
+        });
+        builder.addCase(fetchCommentListByPost.fulfilled,(state,action:PayloadAction<IResponse>)=>{
+            state.showMoreCommentList = action.payload.data
+            state.showMoreCommentList = [...state.showMoreCommentList,...action.payload.data]
+            
+           
+        });
+        
        
     }
 })
 
 export default postSlice.reducer
-export const {setPopUpOpen,setPostId} = postSlice.actions
+export const {setPopUpOpen,setPostId,setShowMoreOpen,increasePageNumber} = postSlice.actions
