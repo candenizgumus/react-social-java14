@@ -1,0 +1,63 @@
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
+
+import { IResponse } from "../../components/models/IResponse"
+import { IPost } from "../../components/models/IPost"
+interface IInitialPost{
+    postList:IPost[],
+    isPostLoading:boolean
+}
+interface ICreatePostPayload {
+    token:string,
+    url:string,
+    comment:string
+}
+
+const initialPostState:IInitialPost = {
+    postList: [],
+    isPostLoading: false,
+}
+
+export const fetchCreatePost = createAsyncThunk(
+    'post/fetchCreatePost',
+    async (payload: ICreatePostPayload) => {
+        const response = await fetch('http://localhost:9090/post/create-post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                'token': payload.token,
+                'url': payload.url,
+                'comment': payload.comment
+            })
+        }).then(data => data.json())
+        return response
+    }
+)
+
+export const fetchGetPostList = createAsyncThunk(
+    'post/fetchGetPostList',
+    async (token:string) => {
+        const response = await fetch('http://localhost:9090/post/get-post-list?token='+token)
+        .then(data => data.json());
+        return response;
+       
+    }
+)
+const postSlice = createSlice({
+    name: 'post',
+    initialState: initialPostState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(fetchCreatePost.fulfilled,(state,action)=>{
+
+        });
+        builder.addCase(fetchGetPostList.pending,(state)=>{
+           state.isPostLoading = true
+        });
+        builder.addCase(fetchGetPostList.fulfilled,(state,action:PayloadAction<IResponse>)=>{
+            state.isPostLoading = false
+            state.postList = action.payload.data
+        })
+    }
+})
+
+export default postSlice.reducer

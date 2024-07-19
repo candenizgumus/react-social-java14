@@ -20,7 +20,7 @@ interface IUserState{
     isLoading : boolean,
 }
 
-const initialUserState = {
+const initialUserState:IUserState = {
     userProfile:  null,
     isLoading : false
 

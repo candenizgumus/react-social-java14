@@ -14,7 +14,7 @@ function HomeLeft(props:IHomeProps) {
        about={props.user === null ? '' : props.user.about} 
        follower={props.user === null ? 0 : props.user.followerCount}
        following={props.user === null ? 0 : props.user.followingCount}/>
-       <About/>
+       <About bornDate={props.user === null ? 0 : props.user.bornDate} phone={props.user === null ? '' : props.user.phone} address={props.user === null ? '' : props.user.address}/>
        <PostImages/>             
                     
                     

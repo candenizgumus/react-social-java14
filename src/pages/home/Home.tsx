@@ -11,7 +11,7 @@ function Home() {
     const dispatch = useDispatch<SocialDispatch>();
     const token = useAppSelector(state => state.auth.token);
     const userProfile:IUserProfile | null = useAppSelector(state => state.user.userProfile);
-
+        
     useEffect(() => {
         dispatch(fetchGetUserProfile(token));
     }, []);
