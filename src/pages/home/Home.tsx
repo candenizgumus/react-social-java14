@@ -7,6 +7,8 @@ import HomeRight from '../../components/organism/HomeRight'
 import { SocialDispatch, useAppSelector } from '../../store'
 import { useDispatch } from 'react-redux'
 import { fetchGetUserProfile, IUserProfile } from '../../store/features/userSlice'
+import CommentPopUp from '../../components/molecules/CommentPopUp'
+import { fetchGetAllComments } from '../../store/features/postSlice'
 function Home() {
     const dispatch = useDispatch<SocialDispatch>();
     const token = useAppSelector(state => state.auth.token);
@@ -14,6 +16,8 @@ function Home() {
         
     useEffect(() => {
         dispatch(fetchGetUserProfile(token));
+        dispatch(fetchGetAllComments());
+
     }, []);
 
   return (
@@ -222,7 +226,9 @@ function Home() {
 
             <div className="col-12 col-lg-6" >
 
-                <HomeContent/>
+                <HomeContent     />
+                <CommentPopUp/>
+
                 
             </div>
 

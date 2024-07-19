@@ -21,7 +21,7 @@ function HomeContent() {
                        <CreatePostCard />
                        {
                         postList.map((post,index) => {
-                          return <Post key={index} avatar={post.avatar} userName={post.userName} comment={post.comment} url={post.photo} date={post.sharedDate} likeCount={post.likeCount} commentCount={post.commentCount} />
+                          return <Post key={index} avatar={post.avatar} userName={post.userName} comment={post.comment} url={post.photo} date={post.sharedDate} likeCount={post.likeCount} commentCount={post.commentCount}   postId={post.postId} />
                         })
                        }
                        

@@ -1,4 +1,5 @@
 export interface IPost {
+    postId: number
     userId: number
     userName: string
     avatar: string
